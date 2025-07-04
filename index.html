@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Northeast Ohio Housing Map</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    #map { height: 100vh; width: 100vw; }
+    .legend { background: white; padding: 10px; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // Initialize map
+    var map = L.map('map').setView([41.5, -81.7], 9);
+
+    // Base tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Placeholder layers - you will replace these with actual GeoJSON files or APIs
+    var rentalRegistryLayer = L.geoJSON(null, {
+      style: { color: 'blue' },
+      onEachFeature: function (feature, layer) {
+        layer.bindPopup("<b>Rental Registry</b><br>" + JSON.stringify(feature.properties));
+      }
+    }).addTo(map);
+
+    var codeViolationsLayer = L.geoJSON(null, {
+      style: { color: 'red' },
+      onEachFeature: function (feature, layer) {
+        layer.bindPopup("<b>Code Violation</b><br>" + JSON.stringify(feature.properties));
+      }
+    }).addTo(map);
+
+    var leadSafetyLayer = L.geoJSON(null, {
+      style: { color: 'green' },
+      onEachFeature: function (feature, layer) {
+        layer.bindPopup("<b>Lead Safety Status</b><br>" + JSON.stringify(feature.properties));
+      }
+    }).addTo(map);
+
+    // Layer control
+    var overlayMaps = {
+      "Rental Registry": rentalRegistryLayer,
+      "Code Violations": codeViolationsLayer,
+      "Lead Safety": leadSafetyLayer
+    };
+    L.control.layers(null, overlayMaps).addTo(map);
+  </script>
+</body>
+</html>
